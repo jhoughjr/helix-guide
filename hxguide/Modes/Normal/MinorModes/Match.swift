@@ -6,20 +6,34 @@
 //
 
 import Foundation
-/**
- Match mode
 
- Accessed by typing m in normal mode.
+/// Match mode — accessed by typing `m` in normal mode.
+/// See the Usage chapter of the Helix book for surround and textobject semantics.
+enum MatchCommands: String, CaseIterable, KeyCommandEnum {
+    typealias Info = Helix.KeyInfo
 
- See the relevant section in Usage for an explanation about surround and textobject usage.
+    case match_brackets
+    case surround_add
+    case surround_replace
+    case surround_delete
+    case select_textobject_around
+    case select_textobject_inner
 
- Key    Description    Command
- m    Goto matching bracket (TS)    match_brackets
- s <char>    Surround current selection with <char>    surround_add
- r <from><to>    Replace surround character <from> with <to>    surround_replace
- d <char>    Delete surround character <char>    surround_delete
- a <object>    Select around textobject    select_textobject_around
- i <object>    Select inside textobject    select_textobject_inner
+    var info: Info {
+        switch self {
 
- 
- */
+        case .match_brackets:
+            return Info(key: "m", description: "Goto matching bracket (TS)")
+        case .surround_add:
+            return Info(key: "s <char>", description: "Surround current selection with <char>")
+        case .surround_replace:
+            return Info(key: "r <from><to>", description: "Replace surround character <from> with <to>")
+        case .surround_delete:
+            return Info(key: "d <char>", description: "Delete surround character <char>")
+        case .select_textobject_around:
+            return Info(key: "a <object>", description: "Select around textobject")
+        case .select_textobject_inner:
+            return Info(key: "i <object>", description: "Select inside textobject")
+        }
+    }
+}
