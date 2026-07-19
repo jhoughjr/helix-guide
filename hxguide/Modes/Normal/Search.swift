@@ -16,6 +16,7 @@ enum SearchCommands: String, CaseIterable, KeyCommandEnum {
     case rsearch
     case search_next
     case search_prev
+    case search_selection_detect_word_boundaries
     case search_selection
 
     var info: Info {
@@ -29,8 +30,10 @@ enum SearchCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "n", description: "Select next search match")
         case .search_prev:
             return Info(key: "N", description: "Select previous search match")
+        case .search_selection_detect_word_boundaries:
+            return Info(key: "*", description: "Use current selection as the search pattern, automatically wrapping with \\b on word boundaries")
         case .search_selection:
-            return Info(key: "*", description: "Use current selection as the search pattern")
+            return Info(key: "Alt-*", description: "Use current selection as the search pattern")
         }
     }
 }

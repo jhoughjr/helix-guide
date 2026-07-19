@@ -16,6 +16,7 @@ enum SpaceCommands: String, CaseIterable, KeyCommandEnum {
     case file_picker_in_current_directory
     case buffer_picker
     case jumplist_picker
+    case changed_file_picker
     case na_debug
     case hover
     case symbol_picker
@@ -27,9 +28,12 @@ enum SpaceCommands: String, CaseIterable, KeyCommandEnum {
     case select_references_to_symbol_under_cursor
     case last_picker
     case na_window_mode
+    case toggle_comments
+    case toggle_block_comments
+    case toggle_line_comments
     case paste_clipboard_after
     case paste_clipboard_before
-    case yank_joined_to_clipboard
+    case yank_to_clipboard
     case yank_main_selection_to_clipboard
     case replace_selections_with_clipboard
     case global_search
@@ -39,15 +43,17 @@ enum SpaceCommands: String, CaseIterable, KeyCommandEnum {
         switch self {
 
         case .file_picker:
-            return Info(key: "f", description: "Open file picker")
+            return Info(key: "f", description: "Open file picker at LSP workspace root")
         case .file_picker_in_current_directory:
             return Info(key: "F", description: "Open file picker at current working directory")
         case .buffer_picker:
             return Info(key: "b", description: "Open buffer picker")
         case .jumplist_picker:
             return Info(key: "j", description: "Open jumplist picker")
+        case .changed_file_picker:
+            return Info(key: "g", description: "Open changed file picker")
         case .na_debug:
-            return Info(key: "g", description: "Debug (experimental)")
+            return Info(key: "G", description: "Debug (experimental)")
         case .hover:
             return Info(key: "k", description: "Show documentation for item under cursor in a popup (LSP)")
         case .symbol_picker:
@@ -68,12 +74,18 @@ enum SpaceCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "'", description: "Open last fuzzy picker")
         case .na_window_mode:
             return Info(key: "w", description: "Enter window mode")
+        case .toggle_comments:
+            return Info(key: "c", description: "Comment/uncomment selections")
+        case .toggle_block_comments:
+            return Info(key: "C", description: "Block comment/uncomment selections")
+        case .toggle_line_comments:
+            return Info(key: "Alt-c", description: "Line comment/uncomment selections")
         case .paste_clipboard_after:
             return Info(key: "p", description: "Paste system clipboard after selections")
         case .paste_clipboard_before:
             return Info(key: "P", description: "Paste system clipboard before selections")
-        case .yank_joined_to_clipboard:
-            return Info(key: "y", description: "Join and yank selections to clipboard")
+        case .yank_to_clipboard:
+            return Info(key: "y", description: "Yank selections to clipboard")
         case .yank_main_selection_to_clipboard:
             return Info(key: "Y", description: "Yank main selection to clipboard")
         case .replace_selections_with_clipboard:

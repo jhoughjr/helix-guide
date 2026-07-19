@@ -38,9 +38,9 @@ enum WindowCommands: String, CaseIterable, KeyCommandEnum {
         case .hsplit:
             return Info(key: "s, Ctrl-s", description: "Horizontal bottom split")
         case .goto_file_hsplit:
-            return Info(key: "f", description: "Go to files in the selection in horizontal splits (goto_file)")
+            return Info(key: "f", description: "Go to files in the selections in horizontal splits (goto_file)")
         case .goto_file_vsplit:
-            return Info(key: "F", description: "Go to files in the selection in vertical splits (goto_file)")
+            return Info(key: "F", description: "Go to files in the selections in vertical splits (goto_file)")
         case .jump_view_left:
             return Info(key: "h, Ctrl-h, Left", description: "Move to left split")
         case .jump_view_down:

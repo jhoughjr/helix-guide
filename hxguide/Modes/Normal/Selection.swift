@@ -13,6 +13,7 @@ enum SelectionManipulationCommands: String, CaseIterable, KeyCommandEnum {
     case select_regex
     case split_selection
     case split_selection_on_newline
+    case merge_selections
     case merge_consecutive_selections
     case align_selections
     case trim_selections
@@ -40,6 +41,10 @@ enum SelectionManipulationCommands: String, CaseIterable, KeyCommandEnum {
     case shrink_selection
     case select_prev_sibling
     case select_next_sibling
+    case select_all_siblings
+    case select_all_children
+    case move_parent_node_end
+    case move_parent_node_start
 
     var info: Info {
         switch self {
@@ -50,6 +55,8 @@ enum SelectionManipulationCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "S", description: "Split selection into sub selections on regex matches")
         case .split_selection_on_newline:
             return Info(key: "Alt-s", description: "Split selection on newlines")
+        case .merge_selections:
+            return Info(key: "Alt-minus", description: "Merge selections")
         case .merge_consecutive_selections:
             return Info(key: "Alt-_", description: "Merge consecutive selections")
         case .align_selections:
@@ -61,7 +68,7 @@ enum SelectionManipulationCommands: String, CaseIterable, KeyCommandEnum {
         case .flip_selections:
             return Info(key: "Alt-;", description: "Flip selection cursor and anchor")
         case .ensure_selections_forward:
-            return Info(key: "Alt-:", description: "Ensure the selection is in forward direction")
+            return Info(key: "Alt-:", description: "Ensures the selection is in forward direction")
         case .keep_primary_selection:
             return Info(key: ",", description: "Keep only the primary selection")
         case .remove_primary_selection:
@@ -104,6 +111,14 @@ enum SelectionManipulationCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "Alt-p, Alt-Left", description: "Select previous sibling node in syntax tree (TS)")
         case .select_next_sibling:
             return Info(key: "Alt-n, Alt-Right", description: "Select next sibling node in syntax tree (TS)")
+        case .select_all_siblings:
+            return Info(key: "Alt-a", description: "Select all sibling nodes in syntax tree (TS)")
+        case .select_all_children:
+            return Info(key: "Alt-I, Alt-Shift-Down", description: "Select all children nodes in syntax tree (TS)")
+        case .move_parent_node_end:
+            return Info(key: "Alt-e", description: "Move to end of parent node in syntax tree (TS)")
+        case .move_parent_node_start:
+            return Info(key: "Alt-b", description: "Move to start of parent node in syntax tree (TS)")
         }
     }
 }

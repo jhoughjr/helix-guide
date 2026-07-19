@@ -23,8 +23,8 @@ enum ChangeCommands: String, CaseIterable, KeyCommandEnum {
     case open_below
     case open_above
     case na_repeat_last_insert
-    case undo_change
-    case redo_change
+    case undo
+    case redo
     case earlier
     case later
     case yank
@@ -70,9 +70,9 @@ enum ChangeCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "O", description: "Open new line above selection")
         case .na_repeat_last_insert:
             return Info(key: ".", description: "Repeat last insert")
-        case .undo_change:
+        case .undo:
             return Info(key: "u", description: "Undo change")
-        case .redo_change:
+        case .redo:
             return Info(key: "U", description: "Redo change")
         case .earlier:
             return Info(key: "Alt-u", description: "Move backward in history")
@@ -99,7 +99,7 @@ enum ChangeCommands: String, CaseIterable, KeyCommandEnum {
         case .change_selection:
             return Info(key: "c", description: "Change selection (delete and enter insert mode)")
         case .change_selection_noyank:
-            return Info(key: "Alt-c", description: "Change selection (delete and enter insert mode), without yanking")
+            return Info(key: "Alt-c", description: "Change selection (delete and enter insert mode, without yanking)")
         case .increment:
             return Info(key: "Ctrl-a", description: "Increment object (number) under cursor")
         case .decrement:

@@ -8,6 +8,12 @@
 import Foundation
 
 struct Helix {
+    /// The Helix release this guide's keymap and command content was reconciled against.
+    /// Bump this — and re-diff every table — whenever the content is refreshed.
+    static let verifiedAgainstVersion = "25.07.1"
+    /// When that reconciliation was last performed.
+    static let verifiedOn = "2026-07-19"
+
     static let SelectOrExtendText = """
 Select mode echoes Normal mode, but changes any movements to extend selections rather than replace them. Goto motions are also changed to extend, so that vgl for example extends the selection to the end of the line.
 

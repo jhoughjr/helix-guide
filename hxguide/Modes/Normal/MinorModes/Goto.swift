@@ -12,6 +12,7 @@ enum GotoCommands: String, CaseIterable, KeyCommandEnum {
     typealias Info = Helix.KeyInfo
 
     case goto_file_start
+    case goto_column
     case goto_last_line
     case goto_file
     case goto_line_start
@@ -29,16 +30,21 @@ enum GotoCommands: String, CaseIterable, KeyCommandEnum {
     case goto_next_buffer
     case goto_previous_buffer
     case goto_last_modification
+    case move_line_down
+    case move_line_up
+    case goto_word
 
     var info: Info {
         switch self {
 
         case .goto_file_start:
-            return Info(key: "g", description: "Go to line number <n>, else start of file")
+            return Info(key: "g", description: "Go to line number <n> else start of file")
+        case .goto_column:
+            return Info(key: "|", description: "Go to column number <n> else start of line")
         case .goto_last_line:
             return Info(key: "e", description: "Go to the end of the file")
         case .goto_file:
-            return Info(key: "f", description: "Go to files in the selection")
+            return Info(key: "f", description: "Go to files in the selections")
         case .goto_line_start:
             return Info(key: "h", description: "Go to the start of the line")
         case .goto_line_end:
@@ -69,6 +75,12 @@ enum GotoCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "p", description: "Go to previous buffer")
         case .goto_last_modification:
             return Info(key: ".", description: "Go to last modification in current file")
+        case .move_line_down:
+            return Info(key: "j", description: "Move down textual (instead of visual) line")
+        case .move_line_up:
+            return Info(key: "k", description: "Move up textual (instead of visual) line")
+        case .goto_word:
+            return Info(key: "w", description: "Show labels at each word and select the word that belongs to the entered labels")
         }
     }
 }

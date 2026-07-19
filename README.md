@@ -7,6 +7,22 @@ Helix is a modal editor with a large keymap. `hxguide` puts that keymap in a bro
 searchable reference you can keep open beside your terminal while the bindings sink in —
 every editor mode, every minor mode, and the built-in `:` commands.
 
+## Content currency
+
+**Verified against Helix 25.07.1 — reconciled 2026-07-19.**
+
+Every table in the app was diffed row-by-row against the book source for that release
+tag: [`book/src/keymap.md`](https://github.com/helix-editor/helix/blob/25.07.1/book/src/keymap.md)
+and the generated
+[`book/src/generated/typable-cmd.md`](https://github.com/helix-editor/helix/blob/25.07.1/book/src/generated/typable-cmd.md).
+The guide targets the latest **stable** release rather than `master`, so it teaches what
+users actually have installed.
+
+The version is also surfaced in the app under **About**, and asserted by the test suite —
+`testTablesHaveExpectedCounts` pins an exact row count per table, so an upstream sync
+cannot land without deliberately restating the numbers. When refreshing content, bump
+`Helix.verifiedAgainstVersion` in `hxguide/helix.swift` and re-diff every table.
+
 ## Screenshot
 
 <!-- TODO: add a screenshot of the app here, e.g. docs/screenshot.png -->
@@ -17,7 +33,8 @@ _Screenshot placeholder._
 
 - **Every mode covered** — normal, insert, select/extend, picker and prompt.
 - **Normal-mode categories** — movement, changes, selection manipulation, search and shell.
-- **All seven minor modes** — view, goto, match, window, space, unimpaired and popup.
+- **All seven minor modes** — view, goto, match, window, space, unimpaired and popup
+  (including the completion menu and signature-help popup).
 - **Built-in commands** — the full `:` command reference.
 - **One unified search** — filters by keystroke *and* description, so searching `gg`,
   `Ctrl-w` or `|` finds the binding, not just prose that happens to mention it.

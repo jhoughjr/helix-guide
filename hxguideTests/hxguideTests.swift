@@ -33,7 +33,37 @@ final class hxguideTests: XCTestCase {
             ("Space", SpaceCommands.entries),
             ("Unimpaired", UnimpairedCommands.entries),
             ("Popup", PopupCommands.entries),
+            ("CompletionMenu", CompletionMenuCommands.entries),
+            ("SignatureHelp", SignatureHelpCommands.entries),
             ("Commands", Helix.Commands.entries)
+        ]
+    }
+
+    /// Row counts as reconciled against the Helix release named by
+    /// `Helix.verifiedAgainstVersion`. These are exact, not minimums: a table that
+    /// gains or loses a row should force a deliberate re-diff against upstream docs
+    /// rather than drifting silently.
+    private var expectedCounts: [String: Int] {
+        [
+            "Movement": 25,
+            "Changes": 31,
+            "Selection": 35,
+            "Search": 6,
+            "Shell": 5,
+            "MinorModes": 8,
+            "Insert": 19,
+            "Picker": 12,
+            "Prompt": 20,
+            "View": 10,
+            "Goto": 22,
+            "Match": 6,
+            "Window": 15,
+            "Space": 26,
+            "Unimpaired": 22,
+            "Popup": 2,
+            "CompletionMenu": 4,
+            "SignatureHelp": 2,
+            "Commands": 89
         ]
     }
 
@@ -45,33 +75,28 @@ final class hxguideTests: XCTestCase {
         }
     }
 
-    /// Minimum counts, so a future refactor that silently drops rows fails loudly.
-    func testTablesMeetMinimumCounts() {
-        let minimums: [String: Int] = [
-            "Movement": 25,
-            "Changes": 31,
-            "Selection": 30,
-            "Search": 5,
-            "Shell": 5,
-            "MinorModes": 8,
-            "Insert": 19,
-            "Picker": 11,
-            "Prompt": 20,
-            "View": 10,
-            "Goto": 18,
-            "Match": 6,
-            "Window": 15,
-            "Space": 22,
-            "Unimpaired": 22,
-            "Popup": 2,
-            "Commands": 77
-        ]
-
+    /// Exact counts, so a refactor that drops rows — or an upstream sync that adds
+    /// them without updating this file — fails loudly.
+    func testTablesHaveExpectedCounts() {
         for table in allTables {
-            let expected = minimums[table.name] ?? 1
-            XCTAssertGreaterThanOrEqual(table.entries.count, expected,
-                                        "\(table.name) has \(table.entries.count) entries, expected at least \(expected)")
+            guard let expected = expectedCounts[table.name] else {
+                XCTFail("\(table.name) has no expected count recorded")
+                continue
+            }
+            XCTAssertEqual(table.entries.count, expected,
+                           "\(table.name) has \(table.entries.count) entries, expected \(expected)")
         }
+    }
+
+    /// Every table in `allTables` must have an expectation, and vice versa, so a new
+    /// table cannot be added without also being counted.
+    func testEveryTableHasARecordedCount() {
+        XCTAssertEqual(Set(allTables.map(\.name)), Set(expectedCounts.keys))
+    }
+
+    func testTotalRowCount() {
+        let total = allTables.reduce(0) { $0 + $1.entries.count }
+        XCTAssertEqual(total, 359, "guide should render 359 rows in total")
     }
 
     // MARK: - Data hygiene
@@ -125,6 +150,67 @@ final class hxguideTests: XCTestCase {
     func testWordMotionKeysAreCorrect() {
         XCTAssertEqual(MovementCommands.move_prev_long_word_start.info.key, "B")
         XCTAssertEqual(MovementCommands.move_next_long_word_end.info.key, "E")
+    }
+
+    // MARK: - Currency against the verified Helix release
+
+    func testVerifiedVersionIsRecorded() {
+        XCTAssertFalse(Helix.verifiedAgainstVersion.isEmpty)
+        XCTAssertFalse(Helix.verifiedOn.isEmpty)
+    }
+
+    /// Bindings added to goto mode after the guide's original 2023 content.
+    /// A regression that drops them should fail rather than quietly teach a stale keymap.
+    func testGotoModeHasCurrentBindings() {
+        let byKey = Dictionary(uniqueKeysWithValues: GotoCommands.entries.map { ($0.key, $0) })
+
+        XCTAssertEqual(byKey["|"]?.id, "goto_column")
+        XCTAssertEqual(byKey["j"]?.id, "move_line_down")
+        XCTAssertEqual(byKey["k"]?.id, "move_line_up")
+        XCTAssertEqual(byKey["w"]?.id, "goto_word")
+    }
+
+    /// `*` searches with word boundaries; the unwrapped variant moved to `Alt-*`.
+    func testSearchSelectionBindings() {
+        XCTAssertEqual(SearchCommands.search_selection_detect_word_boundaries.info.key, "*")
+        XCTAssertEqual(SearchCommands.search_selection.info.key, "Alt-*")
+    }
+
+    /// Space `g` is the changed-file picker; the debug layer is on `G`.
+    func testSpaceModeChangedFilePickerAndDebugKeys() {
+        XCTAssertEqual(SpaceCommands.changed_file_picker.info.key, "g")
+        XCTAssertEqual(SpaceCommands.na_debug.info.key, "G")
+    }
+
+    /// The comment-toggle trio added to space mode.
+    func testSpaceModeCommentBindings() {
+        XCTAssertEqual(SpaceCommands.toggle_comments.info.key, "c")
+        XCTAssertEqual(SpaceCommands.toggle_block_comments.info.key, "C")
+        XCTAssertEqual(SpaceCommands.toggle_line_comments.info.key, "Alt-c")
+    }
+
+    /// Half-page motions move the cursor as well as the view, and are named
+    /// `page_cursor_half_*` upstream — not the old `half_page_*`.
+    func testHalfPageCommandsUseCurrentNames() {
+        XCTAssertEqual(MovementCommands.page_cursor_half_up.info.key, "Ctrl-u")
+        XCTAssertEqual(MovementCommands.page_cursor_half_down.info.key, "Ctrl-d")
+        XCTAssertEqual(ViewCommands.page_cursor_half_up.info.key, "Ctrl-u")
+    }
+
+    /// `:rsort` was removed upstream; sorting in reverse is a flag on `:sort`.
+    func testRemovedTypableCommandsAreAbsent() {
+        let invocations = Helix.Commands.entries.map(\.key).joined(separator: " ")
+        XCTAssertFalse(invocations.contains(":rsort"), ":rsort no longer exists in Helix")
+    }
+
+    /// Typable commands added since the guide's original content.
+    func testCurrentTypableCommandsArePresent() {
+        let ids = Set(Helix.Commands.entries.map(\.id))
+        for command in ["write_buffer_close", "force_write_all", "yank_join",
+                        "tree_sitter_highlight_name", "clear_register", "redraw",
+                        "move", "yank_diagnostic", "read", "echo", "noop"] {
+            XCTAssertTrue(ids.contains(command), ":\(command) is missing from the command list")
+        }
     }
 
     // MARK: - Filtering

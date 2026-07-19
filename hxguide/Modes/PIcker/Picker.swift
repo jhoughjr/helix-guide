@@ -19,6 +19,7 @@ enum PickerCommands: String, CaseIterable, KeyCommandEnum {
     case na_gotoFirst
     case na_gotoLast
     case na_openSelected
+    case na_open_selected_background
     case na_open_horizontal
     case na_open_vertical
     case na_toggle_preview
@@ -41,6 +42,8 @@ enum PickerCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "End", description: "Go to last entry")
         case .na_openSelected:
             return Info(key: "Enter", description: "Open selected")
+        case .na_open_selected_background:
+            return Info(key: "Alt-Enter", description: "Open selected in the background without closing the picker")
         case .na_open_horizontal:
             return Info(key: "Ctrl-s", description: "Open horizontally")
         case .na_open_vertical:

@@ -23,8 +23,8 @@ enum ViewCommands: String, CaseIterable, KeyCommandEnum {
     case scroll_up
     case page_down
     case page_up
-    case half_page_down
-    case half_page_up
+    case page_cursor_half_down
+    case page_cursor_half_up
 
     var info: Info {
         switch self {
@@ -45,10 +45,10 @@ enum ViewCommands: String, CaseIterable, KeyCommandEnum {
             return Info(key: "Ctrl-f, PageDown", description: "Move page down")
         case .page_up:
             return Info(key: "Ctrl-b, PageUp", description: "Move page up")
-        case .half_page_down:
-            return Info(key: "Ctrl-d", description: "Move half page down")
-        case .half_page_up:
-            return Info(key: "Ctrl-u", description: "Move half page up")
+        case .page_cursor_half_down:
+            return Info(key: "Ctrl-d", description: "Move cursor and page half page down")
+        case .page_cursor_half_up:
+            return Info(key: "Ctrl-u", description: "Move cursor and page half page up")
         }
     }
 }

@@ -25,6 +25,8 @@ extension Helix {
         case buffer_previous
         case write
         case force_write
+        case write_buffer_close
+        case force_write_buffer_close
         case new
         case format
         case indent_style
@@ -34,6 +36,7 @@ extension Helix {
         case write_quit
         case force_write_quit
         case write_all
+        case force_write_all
         case write_quit_all
         case force_write_quit_all
         case quit_all
@@ -41,6 +44,7 @@ extension Helix {
         case cquit
         case force_cquit
         case theme
+        case yank_join
         case clipboard_yank
         case clipboard_yank_join
         case primary_clipboard_yank
@@ -63,6 +67,7 @@ extension Helix {
         case lsp_restart
         case lsp_stop
         case tree_sitter_scopes
+        case tree_sitter_highlight_name
         case debug_start
         case debug_remote
         case debug_eval
@@ -77,7 +82,6 @@ extension Helix {
         case toggle_option
         case get_option
         case sort
-        case rsort
         case reflow
         case tree_sitter_subtree
         case config_reload
@@ -90,6 +94,13 @@ extension Helix {
         case pipe_to
         case run_shell_command
         case reset_diff_change
+        case clear_register
+        case redraw
+        case move
+        case yank_diagnostic
+        case read
+        case echo
+        case noop
 
         var info: Info {
             switch self {
@@ -101,7 +112,7 @@ extension Helix {
                 return Info(invocation: ":quit!, :q!",
                             description: "Force close the current view, ignoring unsaved changes.")
             case .open:
-                return Info(invocation: ":open, :o",
+                return Info(invocation: ":open, :o, :edit, :e",
                             description: "Open a file from disk into the current view.")
             case .buffer_close:
                 return Info(invocation: ":buffer-close, :bc, :bclose",
@@ -133,15 +144,21 @@ extension Helix {
             case .force_write:
                 return Info(invocation: ":write!, :w!",
                             description: "Force write changes to disk creating necessary subdirectories. Accepts an optional path (:write! some/path.txt)")
+            case .write_buffer_close:
+                return Info(invocation: ":write-buffer-close, :wbc",
+                            description: "Write changes to disk and closes the buffer. Accepts an optional path (:write-buffer-close some/path.txt)")
+            case .force_write_buffer_close:
+                return Info(invocation: ":write-buffer-close!, :wbc!",
+                            description: "Force write changes to disk creating necessary subdirectories and closes the buffer. Accepts an optional path (:write-buffer-close! some/path.txt)")
             case .new:
                 return Info(invocation: ":new, :n",
                             description: "Create a new scratch buffer.")
             case .format:
                 return Info(invocation: ":format, :fmt",
-                            description: "Format the file using the LSP formatter.")
+                            description: "Format the file using an external formatter or language server.")
             case .indent_style:
                 return Info(invocation: ":indent-style",
-                            description: "Set the indentation style for editing. ('t' for tabs or 1-8 for number of spaces.)")
+                            description: "Set the indentation style for editing. ('t' for tabs or 1-16 for number of spaces.)")
             case .line_ending:
                 return Info(invocation: ":line-ending",
                             description: "Set the document's default line ending. Options: crlf, lf.")
@@ -160,6 +177,9 @@ extension Helix {
             case .write_all:
                 return Info(invocation: ":write-all, :wa",
                             description: "Write changes from all buffers to disk.")
+            case .force_write_all:
+                return Info(invocation: ":write-all!, :wa!",
+                            description: "Forcefully write changes from all buffers to disk creating necessary subdirectories.")
             case .write_quit_all:
                 return Info(invocation: ":write-quit-all, :wqa, :xa",
                             description: "Write changes from all buffers to disk and close all views.")
@@ -181,6 +201,9 @@ extension Helix {
             case .theme:
                 return Info(invocation: ":theme",
                             description: "Change the editor theme (show current theme if no name specified).")
+            case .yank_join:
+                return Info(invocation: ":yank-join",
+                            description: "Yank joined selections. A separator can be provided as first argument. Default value is newline.")
             case .clipboard_yank:
                 return Info(invocation: ":clipboard-yank",
                             description: "Yank main selection into system clipboard.")
@@ -227,26 +250,29 @@ extension Helix {
                 return Info(invocation: ":character-info, :char",
                             description: "Get info about the character under the primary cursor.")
             case .reload:
-                return Info(invocation: ":reload",
+                return Info(invocation: ":reload, :rl",
                             description: "Discard changes and reload from the source file.")
             case .reload_all:
-                return Info(invocation: ":reload-all",
+                return Info(invocation: ":reload-all, :rla",
                             description: "Discard changes and reload all documents from the source files.")
             case .update:
-                return Info(invocation: ":update",
+                return Info(invocation: ":update, :u",
                             description: "Write changes only if the file has been modified.")
             case .lsp_workspace_command:
                 return Info(invocation: ":lsp-workspace-command",
-                            description: "Open workspace command picker.")
+                            description: "Open workspace command picker")
             case .lsp_restart:
                 return Info(invocation: ":lsp-restart",
-                            description: "Restart the Language Server that is in use by the current doc.")
+                            description: "Restarts the given language servers, or all language servers that are used by the current file if no arguments are supplied")
             case .lsp_stop:
                 return Info(invocation: ":lsp-stop",
-                            description: "Stop the Language Server that is in use by the current doc.")
+                            description: "Stops the given language servers, or all language servers that are used by the current file if no arguments are supplied")
             case .tree_sitter_scopes:
                 return Info(invocation: ":tree-sitter-scopes",
                             description: "Display tree sitter scopes, primarily for theming and development.")
+            case .tree_sitter_highlight_name:
+                return Info(invocation: ":tree-sitter-highlight-name",
+                            description: "Display name of tree-sitter highlight scope under the cursor.")
             case .debug_start:
                 return Info(invocation: ":debug-start, :dbg",
                             description: "Start a debug session from a given template with given parameters.")
@@ -279,25 +305,22 @@ extension Helix {
                             description: "Set the language of current buffer (show current language if no value specified).")
             case .set_option:
                 return Info(invocation: ":set-option, :set",
-                            description: "Set a config option at runtime. For example, to disable smart case search, use :set search.smart-case false.")
+                            description: "Set a config option at runtime. For example to disable smart case search, use :set search.smart-case false.")
             case .toggle_option:
                 return Info(invocation: ":toggle-option, :toggle",
-                            description: "Toggle a boolean config option at runtime. For example, to toggle smart case search, use :toggle search.smart-case.")
+                            description: "Toggle a config option at runtime. For example to toggle smart case search, use :toggle search.smart-case.")
             case .get_option:
                 return Info(invocation: ":get-option, :get",
                             description: "Get the current value of a config option.")
             case .sort:
                 return Info(invocation: ":sort",
                             description: "Sort ranges in selection.")
-            case .rsort:
-                return Info(invocation: ":rsort",
-                            description: "Sort ranges in selection in reverse order.")
             case .reflow:
                 return Info(invocation: ":reflow",
                             description: "Hard-wrap the current selection of lines to a given width.")
             case .tree_sitter_subtree:
                 return Info(invocation: ":tree-sitter-subtree, :ts-subtree",
-                            description: "Display tree sitter subtree under cursor, primarily for debugging queries.")
+                            description: "Display the smallest tree-sitter subtree that spans the primary selection, primarily for debugging queries.")
             case .config_reload:
                 return Info(invocation: ":config-reload",
                             description: "Refresh user config.")
@@ -317,17 +340,38 @@ extension Helix {
                 return Info(invocation: ":append-output",
                             description: "Run shell command, appending output after each selection.")
             case .pipe:
-                return Info(invocation: ":pipe",
+                return Info(invocation: ":pipe, :|",
                             description: "Pipe each selection to the shell command.")
             case .pipe_to:
                 return Info(invocation: ":pipe-to",
                             description: "Pipe each selection to the shell command, ignoring output.")
             case .run_shell_command:
-                return Info(invocation: ":run-shell-command, :sh",
-                            description: "Run a shell command.")
+                return Info(invocation: ":run-shell-command, :sh, :!",
+                            description: "Run a shell command")
             case .reset_diff_change:
                 return Info(invocation: ":reset-diff-change, :diffget, :diffg",
                             description: "Reset the diff change at the cursor position.")
+            case .clear_register:
+                return Info(invocation: ":clear-register",
+                            description: "Clear given register. If no argument is provided, clear all registers.")
+            case .redraw:
+                return Info(invocation: ":redraw",
+                            description: "Clear and re-render the whole UI")
+            case .move:
+                return Info(invocation: ":move, :mv",
+                            description: "Move the current buffer and its corresponding file to a different path")
+            case .yank_diagnostic:
+                return Info(invocation: ":yank-diagnostic",
+                            description: "Yank diagnostic(s) under primary cursor to register, or clipboard by default")
+            case .read:
+                return Info(invocation: ":read, :r",
+                            description: "Load a file into buffer")
+            case .echo:
+                return Info(invocation: ":echo",
+                            description: "Prints the given arguments to the statusline.")
+            case .noop:
+                return Info(invocation: ":noop",
+                            description: "Does nothing.")
             }
         }
     }

@@ -116,7 +116,7 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
         case .unimpaired:
             return "Bracket-prefixed motions in the style of vim-unimpaired."
         case .popup:
-            return "Keys for the documentation popup shown for the item under the cursor."
+            return "Keys for the documentation popup, the completion menu and the signature-help popup. Remapping is not currently supported."
         case .picker:
             return "Keys used within the picker. Remapping is not currently supported."
         case .prompt:
@@ -175,7 +175,11 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
         case .unimpaired:
             return [GuideSectionContent(title: "Unimpaired", entries: UnimpairedCommands.entries)]
         case .popup:
-            return [GuideSectionContent(title: "Popup", entries: PopupCommands.entries)]
+            return [
+                GuideSectionContent(title: "Popup", entries: PopupCommands.entries),
+                GuideSectionContent(title: "Completion Menu", entries: CompletionMenuCommands.entries),
+                GuideSectionContent(title: "Signature-help Popup", entries: SignatureHelpCommands.entries)
+            ]
         case .commands:
             return [GuideSectionContent(title: "Commands", entries: Helix.Commands.entries)]
         case .configuration, .credits:
@@ -313,6 +317,9 @@ struct GuideDetailView: View {
             Link("🦀 Rust Website", destination: URL(string: "https://rust-lang.org")!)
             Link("🕊️ Swift Website", destination: URL(string: "https://swift.org")!)
             Text("Keybinding content is drawn from the Helix documentation.")
+                .font(.footnote)
+                .foregroundColor(.secondary)
+            Text("Content verified against Helix \(Helix.verifiedAgainstVersion) on \(Helix.verifiedOn).")
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }
