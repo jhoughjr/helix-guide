@@ -7,51 +7,118 @@
 
 import Foundation
 
-enum SelectionManipulationCommands:String, CaseIterable {
+enum SelectionManipulationCommands: String, CaseIterable, KeyCommandEnum {
     typealias Info = Helix.KeyInfo
-    
+
     case select_regex
-    
-    var info:Info {
+    case split_selection
+    case split_selection_on_newline
+    case merge_selections
+    case merge_consecutive_selections
+    case align_selections
+    case trim_selections
+    case collapse_selection
+    case flip_selections
+    case ensure_selections_forward
+    case keep_primary_selection
+    case remove_primary_selection
+    case copy_selection_on_next_line
+    case copy_selection_on_prev_line
+    case rotate_selections_backward
+    case rotate_selections_forward
+    case rotate_selection_contents_backward
+    case rotate_selection_contents_forward
+    case select_all
+    case extend_line_below
+    case extend_to_line_bounds
+    case shrink_to_line_bounds
+    case join_selections
+    case join_selections_space
+    case keep_selections
+    case remove_selections
+    case toggle_comments
+    case expand_selection
+    case shrink_selection
+    case select_prev_sibling
+    case select_next_sibling
+    case select_all_siblings
+    case select_all_children
+    case move_parent_node_end
+    case move_parent_node_start
+
+    var info: Info {
         switch self {
-            
+
         case .select_regex:
             return Info(key: "s", description: "Select all regex matches inside selections")
+        case .split_selection:
+            return Info(key: "S", description: "Split selection into sub selections on regex matches")
+        case .split_selection_on_newline:
+            return Info(key: "Alt-s", description: "Split selection on newlines")
+        case .merge_selections:
+            return Info(key: "Alt-minus", description: "Merge selections")
+        case .merge_consecutive_selections:
+            return Info(key: "Alt-_", description: "Merge consecutive selections")
+        case .align_selections:
+            return Info(key: "&", description: "Align selection in columns")
+        case .trim_selections:
+            return Info(key: "_", description: "Trim whitespace from the selection")
+        case .collapse_selection:
+            return Info(key: ";", description: "Collapse selection onto a single cursor")
+        case .flip_selections:
+            return Info(key: "Alt-;", description: "Flip selection cursor and anchor")
+        case .ensure_selections_forward:
+            return Info(key: "Alt-:", description: "Ensures the selection is in forward direction")
+        case .keep_primary_selection:
+            return Info(key: ",", description: "Keep only the primary selection")
+        case .remove_primary_selection:
+            return Info(key: "Alt-,", description: "Remove the primary selection")
+        case .copy_selection_on_next_line:
+            return Info(key: "C", description: "Copy selection onto the next line (add cursor below)")
+        case .copy_selection_on_prev_line:
+            return Info(key: "Alt-C", description: "Copy selection onto the previous line (add cursor above)")
+        case .rotate_selections_backward:
+            return Info(key: "(", description: "Rotate main selection backward")
+        case .rotate_selections_forward:
+            return Info(key: ")", description: "Rotate main selection forward")
+        case .rotate_selection_contents_backward:
+            return Info(key: "Alt-(", description: "Rotate selection contents backward")
+        case .rotate_selection_contents_forward:
+            return Info(key: "Alt-)", description: "Rotate selection contents forward")
+        case .select_all:
+            return Info(key: "%", description: "Select entire file")
+        case .extend_line_below:
+            return Info(key: "x", description: "Select current line; if already selected, extend to next line")
+        case .extend_to_line_bounds:
+            return Info(key: "X", description: "Extend selection to line bounds (line-wise selection)")
+        case .shrink_to_line_bounds:
+            return Info(key: "Alt-x", description: "Shrink selection to line bounds (line-wise selection)")
+        case .join_selections:
+            return Info(key: "J", description: "Join lines inside selection")
+        case .join_selections_space:
+            return Info(key: "Alt-J", description: "Join lines inside selection and select the inserted space")
+        case .keep_selections:
+            return Info(key: "K", description: "Keep selections matching the regex")
+        case .remove_selections:
+            return Info(key: "Alt-K", description: "Remove selections matching the regex")
+        case .toggle_comments:
+            return Info(key: "Ctrl-c", description: "Comment/uncomment the selections")
+        case .expand_selection:
+            return Info(key: "Alt-o, Alt-Up", description: "Expand selection to parent syntax node (TS)")
+        case .shrink_selection:
+            return Info(key: "Alt-i, Alt-Down", description: "Shrink syntax tree object selection (TS)")
+        case .select_prev_sibling:
+            return Info(key: "Alt-p, Alt-Left", description: "Select previous sibling node in syntax tree (TS)")
+        case .select_next_sibling:
+            return Info(key: "Alt-n, Alt-Right", description: "Select next sibling node in syntax tree (TS)")
+        case .select_all_siblings:
+            return Info(key: "Alt-a", description: "Select all sibling nodes in syntax tree (TS)")
+        case .select_all_children:
+            return Info(key: "Alt-I, Alt-Shift-Down", description: "Select all children nodes in syntax tree (TS)")
+        case .move_parent_node_end:
+            return Info(key: "Alt-e", description: "Move to end of parent node in syntax tree (TS)")
+        case .move_parent_node_start:
+            return Info(key: "Alt-b", description: "Move to start of parent node in syntax tree (TS)")
         }
     }
 }
-/**
- Selection manipulation
-
- Key    Description    Command
- s    Select all regex matches inside selections    select_regex
- S    Split selection into sub selections on regex matches    split_selection
- Alt-s    Split selection on newlines    split_selection_on_newline
- Alt-_    Merge consecutive selections    merge_consecutive_selections
- &    Align selection in columns    align_selections
- _    Trim whitespace from the selection    trim_selections
- ;    Collapse selection onto a single cursor    collapse_selection
- Alt-;    Flip selection cursor and anchor    flip_selections
- Alt-:    Ensures the selection is in forward direction    ensure_selections_forward
- ,    Keep only the primary selection    keep_primary_selection
- Alt-,    Remove the primary selection    remove_primary_selection
- C    Copy selection onto the next line (Add cursor below)    copy_selection_on_next_line
- Alt-C    Copy selection onto the previous line (Add cursor above)    copy_selection_on_prev_line
- (    Rotate main selection backward    rotate_selections_backward
- )    Rotate main selection forward    rotate_selections_forward
- Alt-(    Rotate selection contents backward    rotate_selection_contents_backward
- Alt-)    Rotate selection contents forward    rotate_selection_contents_forward
- %    Select entire file    select_all
- x    Select current line, if already selected, extend to next line    extend_line_below
- X    Extend selection to line bounds (line-wise selection)    extend_to_line_bounds
- Alt-x    Shrink selection to line bounds (line-wise selection)    shrink_to_line_bounds
- J    Join lines inside selection    join_selections
- Alt-J    Join lines inside selection and select the inserted space    join_selections_space
- K    Keep selections matching the regex    keep_selections
- Alt-K    Remove selections matching the regex    remove_selections
- Ctrl-c    Comment/uncomment the selections    toggle_comments
- Alt-o, Alt-up    Expand selection to parent syntax node (TS)    expand_selection
- Alt-i, Alt-down    Shrink syntax tree object selection (TS)    shrink_selection
- Alt-p, Alt-left    Select previous sibling node in syntax tree (TS)    select_prev_sibling
- Alt-n, Alt-right    Select next sibling node in syntax tree (TS)    select_next_sibling
- */
