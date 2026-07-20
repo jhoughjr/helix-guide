@@ -185,7 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				D8278DF92A0D30C000BD7A80 /* Prompt */,
-				D8278DF82A0D30B600BD7A80 /* PIcker */,
+				D8278DF82A0D30B600BD7A80 /* Picker */,
 				D8278DF72A0D30A600BD7A80 /* SelectExtend */,
 				D8278DF62A0D308A00BD7A80 /* Insert */,
 				D8278DF42A0D301000BD7A80 /* Normal */,
@@ -237,12 +237,12 @@
 			path = SelectExtend;
 			sourceTree = "<group>";
 		};
-		D8278DF82A0D30B600BD7A80 /* PIcker */ = {
+		D8278DF82A0D30B600BD7A80 /* Picker */ = {
 			isa = PBXGroup;
 			children = (
 				D8278DEF2A0C752D00BD7A80 /* Picker.swift */,
 			);
-			path = PIcker;
+			path = Picker;
 			sourceTree = "<group>";
 		};
 		D8278DF92A0D30C000BD7A80 /* Prompt */ = {
