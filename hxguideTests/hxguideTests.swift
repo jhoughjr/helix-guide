@@ -257,6 +257,66 @@ final class hxguideTests: XCTestCase {
         XCTAssertFalse(gotoMatches.isEmpty, "searching a key should return goto-mode rows")
     }
 
+    // MARK: - Global search
+
+    /// A key bound in multiple modes ("gg" style overlap isn't guaranteed, so use
+    /// the description word "selection", which appears across many destinations)
+    /// should surface hits grouped under more than one destination.
+    func testGlobalSearchFindsHitsAcrossMultipleDestinations() {
+        let results = GuideDestination.globalSearch("selection")
+        XCTAssertGreaterThan(results.count, 1,
+                              "expected 'selection' to appear in more than one destination")
+        for result in results {
+            XCTAssertFalse(result.entries.isEmpty, "\(result.destination.title) result has no entries")
+        }
+    }
+
+    func testGlobalSearchNonsenseQueryReturnsNothing() {
+        let results = GuideDestination.globalSearch("zzzznotarealcommandorword")
+        XCTAssertTrue(results.isEmpty)
+    }
+
+    /// Matches the per-entry contract: an empty (or whitespace-only) query matches
+    /// everything, so global search should return every searchable destination.
+    func testGlobalSearchEmptyQueryMatchesEverySearchableDestination() {
+        let results = GuideDestination.globalSearch("")
+        let searchable = GuideDestination.allCases.filter { !$0.sections.flatMap(\.entries).isEmpty }
+        XCTAssertEqual(Set(results.map(\.destination)), Set(searchable))
+
+        let whitespaceResults = GuideDestination.globalSearch("   ")
+        XCTAssertEqual(Set(whitespaceResults.map(\.destination)), Set(searchable))
+    }
+
+    func testGlobalSearchIsCaseInsensitive() {
+        let lower = GuideDestination.globalSearch("window")
+        let upper = GuideDestination.globalSearch("WINDOW")
+        let mixed = GuideDestination.globalSearch("WiNdOw")
+        XCTAssertFalse(lower.isEmpty)
+        XCTAssertEqual(Set(lower.map(\.destination)), Set(upper.map(\.destination)))
+        XCTAssertEqual(Set(lower.map(\.destination)), Set(mixed.map(\.destination)))
+    }
+
+    /// A known command should be findable both by its key and by (a fragment of)
+    /// its description, and both searches should agree on the destination it lives in.
+    func testGlobalSearchFindsKnownCommandByKeyAndByDescription() {
+        let byKey = GuideDestination.globalSearch(WindowCommands.vsplit.info.key)
+        let byDescription = GuideDestination.globalSearch("Vertical right split")
+
+        XCTAssertTrue(byKey.contains { $0.destination == .window },
+                       "searching '\(WindowCommands.vsplit.info.key)' should surface .window")
+        XCTAssertTrue(byDescription.contains { $0.destination == .window },
+                       "searching the description should surface .window")
+    }
+
+    /// Excluded prose-only destinations should never appear in results, for any query.
+    func testGlobalSearchExcludesProseOnlyDestinations() {
+        let results = GuideDestination.globalSearch("")
+        let destinations = Set(results.map(\.destination))
+        XCTAssertFalse(destinations.contains(.configuration))
+        XCTAssertFalse(destinations.contains(.credits))
+        XCTAssertFalse(destinations.contains(.selectOrExtend))
+    }
+
     // MARK: - Config
 
     func testConfigFileLocationsAreNonEmptyForAllPlatforms() {

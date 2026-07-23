@@ -6,6 +6,11 @@
 //
 
 import SwiftUI
+#if os(macOS)
+import AppKit
+#elseif os(iOS)
+import UIKit
+#endif
 
 // MARK: - Destinations
 
@@ -200,6 +205,39 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
     static let reference: [GuideDestination] = [.commands, .staticCommands, .configuration, .credits]
 }
 
+// MARK: - Global search
+
+/// All the rows matching a query within a single destination, for the
+/// cross-destination search results list.
+struct GlobalSearchResult: Identifiable {
+    let destination: GuideDestination
+    let entries: [GuideEntry]
+
+    var id: String { destination.id }
+}
+
+extension GuideDestination {
+    /// Every destination that actually renders rows. `.configuration`, `.credits`
+    /// and `.selectOrExtend` are prose-only and are naturally excluded because
+    /// they have no entries to match against.
+    private static var searchableDestinations: [GuideDestination] {
+        allCases.filter { !$0.sections.flatMap(\.entries).isEmpty }
+    }
+
+    /// Searches every destination's rows for `query`, reusing `GuideEntry.matches(_:)`
+    /// so global search and per-destination search agree on what counts as a match.
+    /// Results are grouped by the destination they came from, in `GuideDestination`
+    /// declaration order, and omit destinations with zero hits.
+    static func globalSearch(_ query: String) -> [GlobalSearchResult] {
+        searchableDestinations.compactMap { destination in
+            let matches = destination.sections
+                .flatMap(\.entries)
+                .filter { $0.matches(query) }
+            return matches.isEmpty ? nil : GlobalSearchResult(destination: destination, entries: matches)
+        }
+    }
+}
+
 /// A titled group of rows within a screen.
 struct GuideSectionContent: Identifiable {
     let title: String
@@ -250,6 +288,28 @@ struct GuideRow: View {
             Spacer(minLength: 0)
         }
         .padding(.vertical, 2)
+        .contextMenu {
+            Button {
+                copyToClipboard(entry.commandName ?? entry.key)
+            } label: {
+                if entry.commandName != nil {
+                    Label("Copy Command Name", systemImage: "doc.on.doc")
+                } else {
+                    Label("Copy Key", systemImage: "doc.on.doc")
+                }
+            }
+        }
+    }
+
+    /// Copies `text` to the platform pasteboard — these values (command names in
+    /// particular) get pasted straight into `config.toml`.
+    private func copyToClipboard(_ text: String) {
+        #if os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #elseif os(iOS)
+        UIPasteboard.general.string = text
+        #endif
     }
 }
 
@@ -333,12 +393,58 @@ struct GuideDetailView: View {
     }
 }
 
+/// The detail pane's content while a global search query is active: every match
+/// across every destination, grouped under the destination it came from. Tapping
+/// a row navigates the sidebar selection to that destination.
+struct GlobalSearchResultsView: View {
+    let query: String
+    let onSelect: (GuideDestination) -> Void
+
+    private var results: [GlobalSearchResult] {
+        GuideDestination.globalSearch(query)
+    }
+
+    var body: some View {
+        List {
+            if results.isEmpty {
+                Section {
+                    Text("No matches for “\(query)”")
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            ForEach(results) { result in
+                Section(result.destination.title) {
+                    ForEach(result.entries) { entry in
+                        Button {
+                            onSelect(result.destination)
+                        } label: {
+                            GuideRow(entry: entry)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+        .navigationTitle("Search Results")
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+    }
+}
+
 // MARK: - Root
 
 struct ContentView: View {
     @State private var selection: GuideDestination? = .normal
     @State private var searchText = ""
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    #if os(macOS)
+    /// Backs the Cmd-F shortcut below. `.searchFocused(_:)` — the only public hook
+    /// SwiftUI offers for focusing the field `.searchable` creates — needs macOS 15,
+    /// above this project's 13.3 floor, so it's applied conditionally.
+    @FocusState private var isSearchFieldFocused: Bool
+    #endif
 
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
@@ -355,17 +461,53 @@ struct ContentView: View {
             #endif
         } detail: {
             if let selection {
-                GuideDetailView(destination: selection, searchText: searchText)
-                    .searchable(text: $searchText, prompt: "Search keys and descriptions")
-                    #if os(macOS)
-                    .frame(minWidth: 420)
-                    #endif
+                detailContent(for: selection)
             } else {
                 Text("Select a topic")
                     .foregroundColor(.secondary)
             }
         }
         .navigationSplitViewStyle(.balanced)
+    }
+
+    /// A blank query keeps today's behavior — the selected destination's own list,
+    /// unfiltered. Anything else switches the whole detail pane to results gathered
+    /// from every destination, since a scoped search can't answer "which mode is
+    /// this key in" — the question searching usually exists to answer.
+    @ViewBuilder
+    private func detailContent(for destination: GuideDestination) -> some View {
+        let base = Group {
+            if searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+                GuideDetailView(destination: destination, searchText: searchText)
+            } else {
+                GlobalSearchResultsView(query: searchText) { match in
+                    selection = match
+                    searchText = ""
+                }
+            }
+        }
+        .searchable(text: $searchText, prompt: "Search all keys and descriptions")
+        #if os(macOS)
+        .frame(minWidth: 420)
+        #endif
+
+        #if os(macOS)
+        if #available(macOS 15.0, *) {
+            base
+                .searchFocused($isSearchFieldFocused)
+                .background(
+                    Button("Focus Search") { isSearchFieldFocused = true }
+                        .keyboardShortcut("f", modifiers: .command)
+                        .opacity(0)
+                        .frame(width: 0, height: 0)
+                        .accessibilityHidden(true)
+                )
+        } else {
+            base
+        }
+        #else
+        base
+        #endif
     }
 
     private func sidebarSection(_ title: String, _ destinations: [GuideDestination]) -> some View {

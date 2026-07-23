@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D8278D9F2A0BE38100BD7A80"
-               BuildableName = "hxguide.app"
+               BuildableName = "Helix Guide.app"
                BlueprintName = "hxguide"
                ReferencedContainer = "container:hxguide.xcodeproj">
             </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8278D9F2A0BE38100BD7A80"
-            BuildableName = "hxguide.app"
+            BuildableName = "Helix Guide.app"
             BlueprintName = "hxguide"
             ReferencedContainer = "container:hxguide.xcodeproj">
          </BuildableReference>
@@ -82,7 +82,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8278D9F2A0BE38100BD7A80"
-            BuildableName = "hxguide.app"
+            BuildableName = "Helix Guide.app"
             BlueprintName = "hxguide"
             ReferencedContainer = "container:hxguide.xcodeproj">
          </BuildableReference>
