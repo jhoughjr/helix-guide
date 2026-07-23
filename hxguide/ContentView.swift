@@ -39,6 +39,7 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
 
     // Reference
     case commands
+    case staticCommands
     case configuration
     case credits
 
@@ -65,6 +66,7 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
         case .unimpaired: return "Unimpaired"
         case .popup: return "Popup"
         case .commands: return "Commands"
+        case .staticCommands: return "Static Commands"
         case .configuration: return "Configuration"
         case .credits: return "About"
         }
@@ -91,6 +93,7 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
         case .unimpaired: return "arrow.up.arrow.down.square"
         case .popup: return "info.bubble"
         case .commands: return "command"
+        case .staticCommands: return "keyboard"
         case .configuration: return "gearshape"
         case .credits: return "heart"
         }
@@ -123,6 +126,8 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
             return "Keys used within the prompt. Remapping is not currently supported."
         case .commands:
             return "Command mode is activated by pressing :. These are the built-in commands."
+        case .staticCommands:
+            return "Static commands are the commands that can be bound to a key in config.toml, as opposed to the typable `:` commands above. Every default keybind in this guide ultimately maps to one of these."
         case .insert:
             return "Insert mode bindings are minimal by default. Changes are committed for undo when returning to normal mode."
         default:
@@ -182,6 +187,8 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
             ]
         case .commands:
             return [GuideSectionContent(title: "Commands", entries: Helix.Commands.entries)]
+        case .staticCommands:
+            return [GuideSectionContent(title: "Static Commands", entries: Helix.StaticCommands.entries)]
         case .configuration, .credits:
             return []
         }
@@ -190,7 +197,7 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
     static let editorModes: [GuideDestination] = [.normal, .insert, .selectOrExtend, .picker, .prompt]
     static let normalCategories: [GuideDestination] = [.movement, .changes, .selectionManipulation, .search, .shell]
     static let minorModes: [GuideDestination] = [.minorModeEntry, .view, .goto, .match, .window, .space, .unimpaired, .popup]
-    static let reference: [GuideDestination] = [.commands, .configuration, .credits]
+    static let reference: [GuideDestination] = [.commands, .staticCommands, .configuration, .credits]
 }
 
 /// A titled group of rows within a screen.

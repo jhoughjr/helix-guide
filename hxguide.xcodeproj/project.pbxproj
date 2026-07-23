@@ -33,6 +33,7 @@
 		D8278DF02A0C752D00BD7A80 /* Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DEF2A0C752D00BD7A80 /* Picker.swift */; };
 		D8278DF22A0C754200BD7A80 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DF12A0C754200BD7A80 /* Prompt.swift */; };
 		D8278DFB2A0D310300BD7A80 /* Commands.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DFA2A0D310300BD7A80 /* Commands.swift */; };
+		D8278E9A2A0D310300BD7A80 /* StaticCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278E9B2A0D310300BD7A80 /* StaticCommands.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 		D8278DEF2A0C752D00BD7A80 /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
 		D8278DF12A0C754200BD7A80 /* Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
 		D8278DFA2A0D310300BD7A80 /* Commands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commands.swift; sourceTree = "<group>"; };
+		D8278E9B2A0D310300BD7A80 /* StaticCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticCommands.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				D8278DFA2A0D310300BD7A80 /* Commands.swift */,
+				D8278E9B2A0D310300BD7A80 /* StaticCommands.swift */,
 			);
 			path = Commands;
 			sourceTree = "<group>";
@@ -182,7 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				D8278DF92A0D30C000BD7A80 /* Prompt */,
-				D8278DF82A0D30B600BD7A80 /* PIcker */,
+				D8278DF82A0D30B600BD7A80 /* Picker */,
 				D8278DF72A0D30A600BD7A80 /* SelectExtend */,
 				D8278DF62A0D308A00BD7A80 /* Insert */,
 				D8278DF42A0D301000BD7A80 /* Normal */,
@@ -234,12 +237,12 @@
 			path = SelectExtend;
 			sourceTree = "<group>";
 		};
-		D8278DF82A0D30B600BD7A80 /* PIcker */ = {
+		D8278DF82A0D30B600BD7A80 /* Picker */ = {
 			isa = PBXGroup;
 			children = (
 				D8278DEF2A0C752D00BD7A80 /* Picker.swift */,
 			);
-			path = PIcker;
+			path = Picker;
 			sourceTree = "<group>";
 		};
 		D8278DF92A0D30C000BD7A80 /* Prompt */ = {
@@ -397,6 +400,7 @@
 				D8278DCF2A0BE3B900BD7A80 /* helix.swift in Sources */,
 				D8278DEC2A0C74F500BD7A80 /* Insert.swift in Sources */,
 				D8278DFB2A0D310300BD7A80 /* Commands.swift in Sources */,
+				D8278E9A2A0D310300BD7A80 /* StaticCommands.swift in Sources */,
 				D8278DE02A0C747000BD7A80 /* Goto.swift in Sources */,
 				D8278DE82A0C74C300BD7A80 /* Popup.swift in Sources */,
 				D8278DA42A0BE38100BD7A80 /* hxguideApp.swift in Sources */,
