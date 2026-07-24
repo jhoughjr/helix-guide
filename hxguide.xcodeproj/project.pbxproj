@@ -12,8 +12,6 @@
 		D8278DA82A0BE38300BD7A80 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8278DA72A0BE38300BD7A80 /* Assets.xcassets */; };
 		D8278DAC2A0BE38300BD7A80 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8278DAB2A0BE38300BD7A80 /* Preview Assets.xcassets */; };
 		D8278DB62A0BE38300BD7A80 /* hxguideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DB52A0BE38300BD7A80 /* hxguideTests.swift */; };
-		D8278DC02A0BE38300BD7A80 /* hxguideUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DBF2A0BE38300BD7A80 /* hxguideUITests.swift */; };
-		D8278DC22A0BE38300BD7A80 /* hxguideUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DC12A0BE38300BD7A80 /* hxguideUITestsLaunchTests.swift */; };
 		D8278DCF2A0BE3B900BD7A80 /* helix.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DCE2A0BE3B900BD7A80 /* helix.swift */; };
 		D8278DD12A0C633500BD7A80 /* Movement.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DD02A0C633500BD7A80 /* Movement.swift */; };
 		D8278DD42A0C64CE00BD7A80 /* Changes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8278DD32A0C64CE00BD7A80 /* Changes.swift */; };
@@ -44,13 +42,6 @@
 			remoteGlobalIDString = D8278D9F2A0BE38100BD7A80;
 			remoteInfo = hxguide;
 		};
-		D8278DBC2A0BE38300BD7A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D8278D982A0BE38100BD7A80 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D8278D9F2A0BE38100BD7A80;
-			remoteInfo = hxguide;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -62,9 +53,6 @@
 		D8278DAB2A0BE38300BD7A80 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D8278DB12A0BE38300BD7A80 /* hxguideTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = hxguideTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8278DB52A0BE38300BD7A80 /* hxguideTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hxguideTests.swift; sourceTree = "<group>"; };
-		D8278DBB2A0BE38300BD7A80 /* hxguideUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = hxguideUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8278DBF2A0BE38300BD7A80 /* hxguideUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hxguideUITests.swift; sourceTree = "<group>"; };
-		D8278DC12A0BE38300BD7A80 /* hxguideUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hxguideUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		D8278DCE2A0BE3B900BD7A80 /* helix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helix.swift; sourceTree = "<group>"; };
 		D8278DD02A0C633500BD7A80 /* Movement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movement.swift; sourceTree = "<group>"; };
 		D8278DD32A0C64CE00BD7A80 /* Changes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Changes.swift; sourceTree = "<group>"; };
@@ -102,13 +90,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8278DB82A0BE38300BD7A80 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -117,7 +98,6 @@
 			children = (
 				D8278DA22A0BE38100BD7A80 /* hxguide */,
 				D8278DB42A0BE38300BD7A80 /* hxguideTests */,
-				D8278DBE2A0BE38300BD7A80 /* hxguideUITests */,
 				D8278DA12A0BE38100BD7A80 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -127,7 +107,6 @@
 			children = (
 				D8278DA02A0BE38100BD7A80 /* hxguide.app */,
 				D8278DB12A0BE38300BD7A80 /* hxguideTests.xctest */,
-				D8278DBB2A0BE38300BD7A80 /* hxguideUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -161,15 +140,6 @@
 				D8278DB52A0BE38300BD7A80 /* hxguideTests.swift */,
 			);
 			path = hxguideTests;
-			sourceTree = "<group>";
-		};
-		D8278DBE2A0BE38300BD7A80 /* hxguideUITests */ = {
-			isa = PBXGroup;
-			children = (
-				D8278DBF2A0BE38300BD7A80 /* hxguideUITests.swift */,
-				D8278DC12A0BE38300BD7A80 /* hxguideUITestsLaunchTests.swift */,
-			);
-			path = hxguideUITests;
 			sourceTree = "<group>";
 		};
 		D8278DD22A0C649F00BD7A80 /* Commands */ = {
@@ -291,24 +261,6 @@
 			productReference = D8278DB12A0BE38300BD7A80 /* hxguideTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		D8278DBA2A0BE38300BD7A80 /* hxguideUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D8278DCB2A0BE38300BD7A80 /* Build configuration list for PBXNativeTarget "hxguideUITests" */;
-			buildPhases = (
-				D8278DB72A0BE38300BD7A80 /* Sources */,
-				D8278DB82A0BE38300BD7A80 /* Frameworks */,
-				D8278DB92A0BE38300BD7A80 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D8278DBD2A0BE38300BD7A80 /* PBXTargetDependency */,
-			);
-			name = hxguideUITests;
-			productName = hxguideUITests;
-			productReference = D8278DBB2A0BE38300BD7A80 /* hxguideUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -323,10 +275,6 @@
 						CreatedOnToolsVersion = 14.3;
 					};
 					D8278DB02A0BE38300BD7A80 = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = D8278D9F2A0BE38100BD7A80;
-					};
-					D8278DBA2A0BE38300BD7A80 = {
 						CreatedOnToolsVersion = 14.3;
 						TestTargetID = D8278D9F2A0BE38100BD7A80;
 					};
@@ -347,7 +295,6 @@
 			targets = (
 				D8278D9F2A0BE38100BD7A80 /* hxguide */,
 				D8278DB02A0BE38300BD7A80 /* hxguideTests */,
-				D8278DBA2A0BE38300BD7A80 /* hxguideUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -363,13 +310,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D8278DAF2A0BE38300BD7A80 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D8278DB92A0BE38300BD7A80 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -416,15 +356,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8278DB72A0BE38300BD7A80 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D8278DC02A0BE38300BD7A80 /* hxguideUITests.swift in Sources */,
-				D8278DC22A0BE38300BD7A80 /* hxguideUITestsLaunchTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -432,11 +363,6 @@
 			isa = PBXTargetDependency;
 			target = D8278D9F2A0BE38100BD7A80 /* hxguide */;
 			targetProxy = D8278DB22A0BE38300BD7A80 /* PBXContainerItemProxy */;
-		};
-		D8278DBD2A0BE38300BD7A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D8278D9F2A0BE38100BD7A80 /* hxguide */;
-			targetProxy = D8278DBC2A0BE38300BD7A80 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -670,48 +596,6 @@
 			};
 			name = Release;
 		};
-		D8278DCC2A0BE38300BD7A80 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phsystems.hxguideUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = hxguide;
-			};
-			name = Debug;
-		};
-		D8278DCD2A0BE38300BD7A80 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phsystems.hxguideUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = hxguide;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -738,15 +622,6 @@
 			buildConfigurations = (
 				D8278DC92A0BE38300BD7A80 /* Debug */,
 				D8278DCA2A0BE38300BD7A80 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D8278DCB2A0BE38300BD7A80 /* Build configuration list for PBXNativeTarget "hxguideUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D8278DCC2A0BE38300BD7A80 /* Debug */,
-				D8278DCD2A0BE38300BD7A80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
