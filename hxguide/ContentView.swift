@@ -324,6 +324,23 @@ struct KeyCap: View {
     }
 }
 
+/// A detail-pane section header: the section's icon and title, sized up from the
+/// default list-header style and painted in the section's hue so each group reads
+/// as its own color band.
+struct SectionHeaderLabel: View {
+    let title: String
+    let symbol: String
+    let tint: Color
+
+    var body: some View {
+        Label(title, systemImage: symbol)
+            .font(.title3.weight(.semibold))
+            .foregroundStyle(tint)
+            .textCase(nil)
+            .padding(.top, 4)
+    }
+}
+
 /// One keystroke and what it does. The key is monospaced on a subtle rounded
 /// background so the key column stays scannable — the whole point of a shortcut reference.
 struct GuideRow: View {
@@ -425,8 +442,7 @@ struct GuideDetailView: View {
                             GuideRow(entry: entry, tint: accent.tint)
                         }
                     } header: {
-                        Label(section.title, systemImage: accent.symbol)
-                            .foregroundStyle(accent.tint)
+                        SectionHeaderLabel(title: section.title, symbol: accent.symbol, tint: accent.tint)
                     }
                 }
             }
@@ -481,8 +497,9 @@ struct GuideDetailView: View {
                          tint: GuideDestination.configuration.tint)
             }
         } header: {
-            Label("Configuration File Locations", systemImage: GuideDestination.configuration.symbol)
-                .foregroundStyle(GuideDestination.configuration.tint)
+            SectionHeaderLabel(title: "Configuration File Locations",
+                               symbol: GuideDestination.configuration.symbol,
+                               tint: GuideDestination.configuration.tint)
         }
     }
 
@@ -532,8 +549,9 @@ struct GlobalSearchResultsView: View {
                         .buttonStyle(.plain)
                     }
                 } header: {
-                    Label(result.destination.title, systemImage: result.destination.symbol)
-                        .foregroundStyle(result.destination.tint)
+                    SectionHeaderLabel(title: result.destination.title,
+                                       symbol: result.destination.symbol,
+                                       tint: result.destination.tint)
                 }
             }
         }
