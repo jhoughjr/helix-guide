@@ -25,9 +25,7 @@ cannot land without deliberately restating the numbers. When refreshing content,
 
 ## Screenshot
 
-<!-- TODO: add a screenshot of the app here, e.g. docs/screenshot.png -->
-
-_Screenshot placeholder._
+![Helix Guide on macOS — the Normal-mode movement table beside the mode sidebar, with the unified search field.](docs/screenshot.png)
 
 ## Features
 
