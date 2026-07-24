@@ -104,6 +104,42 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
         }
     }
 
+    /// The accent hue for this screen. Related topics share a hue on purpose — the
+    /// normal-mode categories keep the same color whether viewed on their own or as
+    /// sections under Normal — so color reinforces structure instead of just decorating.
+    var tint: Color {
+        switch self {
+        case .normal, .movement, .commands: return .blue
+        case .insert, .changes: return .green
+        case .selectOrExtend, .selectionManipulation: return .purple
+        case .picker, .search, .goto: return .orange
+        case .prompt, .view: return .teal
+        case .shell, .match, .credits: return .pink
+        case .minorModeEntry, .window, .staticCommands: return .indigo
+        case .space: return .mint
+        case .unimpaired: return .cyan
+        case .popup: return .brown
+        case .configuration: return .gray
+        }
+    }
+
+    /// The keystroke that enters this mode from Normal mode, shown as an "Enter with"
+    /// badge in the detail header. `nil` where there's no single entry key (Normal is
+    /// the default; Insert has many; pickers/prompts/popups are entered contextually).
+    var entryKey: String? {
+        switch self {
+        case .selectOrExtend: return "v"
+        case .goto: return "g"
+        case .match: return "m"
+        case .window: return "Ctrl-w"
+        case .space: return "Space"
+        case .view: return "z"
+        case .unimpaired: return "[ ]"
+        case .commands: return ":"
+        default: return nil
+        }
+    }
+
     /// Explanatory prose shown above the key list, where the mode needs it.
     var prose: String? {
         switch self {
@@ -203,6 +239,20 @@ enum GuideDestination: String, CaseIterable, Identifiable, Hashable {
     static let normalCategories: [GuideDestination] = [.movement, .changes, .selectionManipulation, .search, .shell]
     static let minorModes: [GuideDestination] = [.minorModeEntry, .view, .goto, .match, .window, .space, .unimpaired, .popup]
     static let reference: [GuideDestination] = [.commands, .staticCommands, .configuration, .credits]
+
+    /// The symbol and tint for a detail-pane section header. Section titles usually
+    /// match a destination's title (so a "Movement" section borrows the Movement
+    /// icon and hue); the few that don't are mapped explicitly.
+    static func accent(forSection title: String) -> (symbol: String, tint: Color) {
+        let destination: GuideDestination?
+        switch title {
+        case "Minor Modes": destination = .minorModeEntry
+        case "Completion Menu", "Signature-help Popup": destination = .popup
+        case "Configuration File Locations": destination = .configuration
+        default: destination = allCases.first { $0.title == title }
+        }
+        return (destination?.symbol ?? "circle.fill", destination?.tint ?? .secondary)
+    }
 }
 
 // MARK: - Global search
@@ -254,22 +304,35 @@ struct GuideSectionContent: Identifiable {
 
 // MARK: - Rows
 
+/// A keystroke rendered as a monospaced "keycap" on a subtle rounded background,
+/// tinted to its section's hue. Shared by the row list and the detail header so the
+/// key styling is defined once.
+struct KeyCap: View {
+    let text: String
+    var tint: Color = .secondary
+
+    var body: some View {
+        Text(text)
+            .font(.system(.body, design: .monospaced))
+            .foregroundColor(.primary)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
+            .background(
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .fill(tint.opacity(0.18))
+            )
+    }
+}
+
 /// One keystroke and what it does. The key is monospaced on a subtle rounded
 /// background so the key column stays scannable — the whole point of a shortcut reference.
 struct GuideRow: View {
     let entry: GuideEntry
+    var tint: Color = .secondary
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Text(entry.key)
-                .font(.system(.body, design: .monospaced))
-                .foregroundColor(.primary)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 3)
-                .background(
-                    RoundedRectangle(cornerRadius: 5, style: .continuous)
-                        .fill(Color.secondary.opacity(0.15))
-                )
+            KeyCap(text: entry.key, tint: tint)
                 .frame(minWidth: 90, alignment: .leading)
                 .accessibilityLabel(Text("Key \(entry.key)"))
 
@@ -331,6 +394,8 @@ struct GuideDetailView: View {
 
     var body: some View {
         List {
+            headerBanner
+
             if let prose = destination.prose {
                 Section {
                     Text(prose)
@@ -354,10 +419,14 @@ struct GuideDetailView: View {
                 }
 
                 ForEach(visibleSections) { section in
-                    Section(section.title) {
+                    let accent = GuideDestination.accent(forSection: section.title)
+                    Section {
                         ForEach(section.entries) { entry in
-                            GuideRow(entry: entry)
+                            GuideRow(entry: entry, tint: accent.tint)
                         }
+                    } header: {
+                        Label(section.title, systemImage: accent.symbol)
+                            .foregroundStyle(accent.tint)
                     }
                 }
             }
@@ -368,13 +437,52 @@ struct GuideDetailView: View {
         #endif
     }
 
+    /// A tinted icon chip, the screen's title, and — for modes reachable by a
+    /// keystroke — an "Enter with" keycap, so the entry combo reads at a glance.
+    private var headerBanner: some View {
+        HStack(spacing: 14) {
+            Image(systemName: destination.symbol)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .background(
+                    RoundedRectangle(cornerRadius: 11, style: .continuous)
+                        .fill(destination.tint.gradient)
+                )
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(destination.title)
+                    .font(.title2.bold())
+                if let entryKey = destination.entryKey {
+                    HStack(spacing: 6) {
+                        Text("Enter with")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        KeyCap(text: entryKey, tint: destination.tint)
+                            .accessibilityLabel(Text("Enter with key \(entryKey)"))
+                    }
+                }
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 4)
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
     private var configurationSection: some View {
-        Section("Configuration File Locations") {
+        Section {
             ForEach(Helix.ConfigFileLocations.allCases, id: \.self) { location in
                 GuideRow(entry: GuideEntry(id: "na_config_\(location.rawValue)",
                                            key: location.description(),
-                                           detail: location.displayName))
+                                           detail: location.displayName),
+                         tint: GuideDestination.configuration.tint)
             }
+        } header: {
+            Label("Configuration File Locations", systemImage: GuideDestination.configuration.symbol)
+                .foregroundStyle(GuideDestination.configuration.tint)
         }
     }
 
@@ -414,15 +522,18 @@ struct GlobalSearchResultsView: View {
             }
 
             ForEach(results) { result in
-                Section(result.destination.title) {
+                Section {
                     ForEach(result.entries) { entry in
                         Button {
                             onSelect(result.destination)
                         } label: {
-                            GuideRow(entry: entry)
+                            GuideRow(entry: entry, tint: result.destination.tint)
                         }
                         .buttonStyle(.plain)
                     }
+                } header: {
+                    Label(result.destination.title, systemImage: result.destination.symbol)
+                        .foregroundStyle(result.destination.tint)
                 }
             }
         }
@@ -513,8 +624,13 @@ struct ContentView: View {
     private func sidebarSection(_ title: String, _ destinations: [GuideDestination]) -> some View {
         Section(title) {
             ForEach(destinations) { destination in
-                Label(destination.title, systemImage: destination.symbol)
-                    .tag(destination)
+                Label {
+                    Text(destination.title)
+                } icon: {
+                    Image(systemName: destination.symbol)
+                        .foregroundStyle(destination.tint)
+                }
+                .tag(destination)
             }
         }
     }
