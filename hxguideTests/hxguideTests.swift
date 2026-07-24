@@ -83,8 +83,8 @@ final class hxguideTests: XCTestCase {
                 XCTFail("\(table.name) has no expected count recorded")
                 continue
             }
-            XCTAssertGreaterThanOrEqual(table.entries.count, expected,
-                           "\(table.name) has \(table.entries.count) entries, expected at least \(expected)")
+            XCTAssertEqual(table.entries.count, expected,
+                           "\(table.name) has \(table.entries.count) entries, expected exactly \(expected) — re-diff against upstream and restate the count deliberately")
         }
     }
 
@@ -96,7 +96,7 @@ final class hxguideTests: XCTestCase {
 
     func testTotalRowCount() {
         let total = allTables.reduce(0) { $0 + $1.entries.count }
-        XCTAssertGreaterThanOrEqual(total, 359, "guide should render at least 359 rows in total")
+        XCTAssertEqual(total, 359, "guide should render exactly 359 rows across the keymap tables")
     }
 
     // MARK: - Data hygiene
