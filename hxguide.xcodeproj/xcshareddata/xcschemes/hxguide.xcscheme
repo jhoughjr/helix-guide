@@ -38,16 +38,6 @@
                ReferencedContainer = "container:hxguide.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D8278DBA2A0BE38300BD7A80"
-               BuildableName = "hxguideUITests.xctest"
-               BlueprintName = "hxguideUITests"
-               ReferencedContainer = "container:hxguide.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
